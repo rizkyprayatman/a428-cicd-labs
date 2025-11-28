@@ -4,7 +4,7 @@ node {
     }
 
     stage('Install Node') {
-        sh 'curl -fsSL https://deb.nodesource.com/setup_18.x | bash -'
+        sh 'curl -fsSL https://deb.nodesource.com/setup_16.x | bash -'
         sh 'apt-get install -y nodejs'
     }
 
