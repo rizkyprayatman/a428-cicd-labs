@@ -1,26 +1,40 @@
-node {
-    stage('Checkout') {
-        git branch: 'react-app', url: 'https://github.com/rizkyprayatman/a428-cicd-labs.git'
+pipeline {
+    agent {
+        docker {
+            image 'node:16'
+            args '-u root:root'
+        }
     }
 
-    stage('Install Node') {
-        sh 'curl -fsSL https://deb.nodesource.com/setup_16.x | bash -'
-        sh 'apt-get install -y nodejs'
-    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'react-app', url: 'https://github.com/rizkyprayatman/a428-cicd-labs.git'
+            }
+        }
 
-    stage('Install Dependencies') {
-        sh 'npm ci'
-    }
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
 
-    stage('Build') {
-        sh 'npm run build'
-    }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
 
-    stage('Test') {
-        sh 'npm test -- --watchAll=false'
-    }
+        stage('Test') {
+            steps {
+                sh 'npm test -- --watchAll=false'
+            }
+        }
 
-    stage('Archive') {
-        archiveArtifacts artifacts: 'build/**', fingerprint: true
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: 'build/**', fingerprint: true
+            }
+        }
     }
 }
