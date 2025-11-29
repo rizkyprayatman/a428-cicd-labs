@@ -6,19 +6,19 @@ node {
 
     stage('Install Dependencies') {
         sh '''
-        docker run --rm -v $PWD:/app -w /app node:16-alpine npm install
+        docker run --rm -v $WORKSPACE:/app -w /app node:16-alpine npm install
         '''
     }
 
     stage('Build React App') {
         sh '''
-        docker run --rm -v $PWD:/app -w /app node:16-alpine npm run build
+        docker run --rm -v $WORKSPACE:/app -w /app node:16-alpine npm run build
         '''
     }
 
     stage('Test') {
         sh '''
-        docker run --rm -v $PWD:/app -w /app node:16-alpine npm test -- --watchAll=false
+        docker run --rm -v $WORKSPACE:/app -w /app node:16-alpine npm test -- --watchAll=false
         '''
     }
 
