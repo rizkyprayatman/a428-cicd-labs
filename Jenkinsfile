@@ -27,15 +27,25 @@ node {
     }
 
     stage('Build Docker Image') {
-        sh 'docker build -t react-app .'
+        sh 'docker build -t react-app:latest .'
     }
 
-    stage('Run Container') {
+    stage('Manual Approval') {
+        timeout(time: 10, unit: 'MINUTES') {
+            input message: 'Lanjutkan ke tahap Deploy?'
+        }
+    }
+
+    stage('Deploy') {
         sh '''
-        docker stop react-app || true
-        docker rm react-app || true
-        docker run -d -p 9000:80 --name react-app react-app
+        docker rm -f react-app || true
+        docker run -d \
+            --name react-app \
+            -p 9000:80 \
+            react-app:latest
         '''
+        echo "⏳ Menunggu 60 detik sebelum pipeline selesai..."
+        sleep 60
     }
 
     stage('Archive Build Artifacts') {
