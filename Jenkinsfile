@@ -4,22 +4,26 @@ node {
         git branch: 'react-app', url: 'https://github.com/rizkyprayatman/a428-cicd-labs.git'
     }
 
-    stage('Install Dependencies') {
+    stage('Install Node 16') {
         sh '''
-        docker run --rm -v $PWD/react-app:/app -w /app node:16-alpine npm install
+        curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+        apt-get update
+        apt-get install -y nodejs
+        node -v
+        npm -v
         '''
+    }
+
+    stage('Install Dependencies') {
+        sh 'npm install'
     }
 
     stage('Build React App') {
-        sh '''
-        docker run --rm -v $PWD/react-app:/app -w /app node:16-alpine npm run build
-        '''
+        sh 'npm run build'
     }
 
     stage('Test') {
-        sh '''
-        docker run --rm -v $PWD/react-app:/app -w /app node:16-alpine npm test -- --watchAll=false
-        '''
+        sh 'npm test -- --watchAll=false'
     }
 
     stage('Manual Approval') {
